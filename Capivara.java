@@ -30,76 +30,88 @@ public class Capivara extends Robot
         setBulletColor(Color.cyan);
         setScanColor(Color.cyan);
 
-        // Initialize moveAmount to the maximum possible for this battlefield.
+        // Inicializa moveAmount para o máximo possível para este campo de batalha.
         moveAmount = Math.max(getBattleFieldWidth(), getBattleFieldHeight());
-        // Initialize peek to false
+        // Inicializar peek como falso
         peek = false;
 
-        // turnLeft to face a wall.
-        // getHeading() % 90 means the remainder of
-        // getHeading() divided by 90.
+		// vire à esquerda para ficar de frente para uma parede.
+		// getHeading() % 90 significa o resto de
+		// getHeading() dividido por 90.
         turnLeft(getHeading() % 90);
         ahead(moveAmount);
-        // Turn the gun to turn right 90 degrees.
+        // Gire a arma para virar 90 graus para a direita.
         peek = true;
         turnGunRight(90);
         turnRight(90);
 
         while (true) {
-            // Look before we turn when ahead() completes.
+            // Olhe antes de virar quando ahead() for concluído.
             peek = true;
-            // Move up the wall
+            // Suba na parede
             ahead(moveAmount);
-            // Don't look now
+			turnGunRight(45);
+            // Não olhe agora
             peek = false;
-            // Turn to the next wall
+            // Vire para a próxima parede
             turnRight(90);
+			
+		
         }
     }
     /**
-     * onScannedRobot: What to do when you see another robot
+     * onScannedRobot: O que fazer quando você vê outro robô
      */
 public void onScannedRobot(ScannedRobotEvent e) {
-        // Calculate exact location of the robot
+        // Calcula a localização exata do robô
         double absoluteBearing = getHeading() + e.getBearing();
         double bearingFromGun = normalRelativeAngleDegrees(absoluteBearing - getGunHeading());
 
-        // If it's close enough, fire!
+        // Se estiver perto o suficiente, atire!
         if (Math.abs(bearingFromGun) <= 3) {
             turnGunRight(bearingFromGun);
-            // We check gun heat here, because calling fire()
-            // uses a turn, which could cause us to lose track
-            // of the other robot.
+		// Verificamos o calor da arma aqui, porque chamar fire()
+		// usa um turno, o que pode nos fazer perder o controle
+		// do outro robô.
             if (getGunHeat() == 0) {
                 fire(Math.min(3 - Math.abs(bearingFromGun), getEnergy() - .1));
             }
-        } // otherwise just set the gun to turn.
-        // Note:  This will have no effect until we call scan()
+        } // caso contrário, basta configurar a arma para girar..
+        // Nota: Isso não terá efeito até que chamemos scan()
         else {
             turnGunRight(bearingFromGun);
         }
-        // Generates another scan event if we see a robot.
-        // We only need to call this if the gun (and therefore radar)
-        // are not turning.  Otherwise, scan is called automatically.
+ 		// Gera outro evento de varredura se virmos um robô.
+		// Só precisamos chamar isso se a arma (e, portanto, o radar)
+		// não estiver girando. Caso contrário, a varredura é chamada automaticamente.
         if (bearingFromGun == 0) {
             scan();
         }
     }
 
     /**
-     * onHitByBullet: What to do when you're hit by a bullet
+     * onHitByBullet: O que fazer quando você for atingido por uma bala
      */
     public void onHitByBullet(HitByBulletEvent e) {
-        // Replace the next line with any behavior you would like
-        back(50);
+        // Substitua a próxima linha por qualquer comportamento que você desejar
+		 // Inicializa moveAmount para o máximo possível para este campo de batalha.
+        moveAmount = Math.max(getBattleFieldWidth(), getBattleFieldHeight());
+        // Inicializar peek como falso
+        peek = false;
+
+		// vire à esquerda para ficar de frente para uma parede.
+		// getHeading() % 90 significa o resto de
+		// getHeading() dividido por 90.
+        turnLeft(getHeading() % 90);
+        ahead(moveAmount);
     }
     
     /**
-     * onHitWall: What to do when you hit a wall
+     * onHitWall: O que fazer quando você bate em uma parede
      */
     public void onHitWall(HitWallEvent e) {
-        // Replace the next line with any behavior you would like
-        back(50);
+       //Substitua a próxima linha por qualquer comportamento que você desejar
+        back(20);
     }    
 }
 
